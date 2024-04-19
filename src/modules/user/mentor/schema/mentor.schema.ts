@@ -21,10 +21,10 @@ export const mentorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    verification_pin: {
+    verificationPin: {
         type: String
     },
-    pin_update_time: {
+    pinUpdateTime: {
         type: Date
     },
     status: {

@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Mentee } from '../interfaces/mentee.interface';
+import { Mentee } from '../../interfaces/mentee.interface';
 import { CreateSignupDto } from '../../dtos/user.dto';
 import { PasswordService } from '../../auth/passwordEncryption.service';
 import { InjectModel } from '@nestjs/mongoose';
@@ -32,6 +32,7 @@ export class MenteeService {
       fullname: newMentee.fullname,
       email: newMentee.email,
       password: password_hash,
+      verificationPin: newMentee.verificationPin,
     });
 
     delete createdMentee.password;
@@ -56,5 +57,15 @@ export class MenteeService {
     }
 
     return user;
+  }
+
+  async updateMentee(id: string, updateOption: object): Promise<Mentee> {
+    try {
+      const user = await this.menteeModel.findByIdAndUpdate(id, updateOption);
+
+      return user;
+    } catch {
+      throw new BadRequestException();
+    }
   }
 }

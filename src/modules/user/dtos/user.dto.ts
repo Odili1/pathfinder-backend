@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from "class-validator"
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator"
 
 
 
@@ -26,5 +26,15 @@ export class CreateSignupDto{
 
     @IsNotEmpty()
     readonly confirmPassword?: string
+
+    @IsOptional()
+    readonly verificationPin?: string
 }
+
+export class verificationPinDto{
+    @IsNotEmpty()
+    @IsString()
+    readonly verificationPin: string
+}
+
 

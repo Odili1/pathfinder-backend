@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Mentor } from '../interfaces/mentor.interface';
+import { Mentor } from '../../interfaces/mentor.interface';
 import { Model } from 'mongoose';
 import { CreateSignupDto } from '../../dtos/user.dto';
 import { PasswordService } from '../../auth/passwordEncryption.service';
@@ -32,6 +32,7 @@ export class MentorService {
       fullname: newMentor.fullname,
       email: newMentor.email,
       password: password_hash,
+      verificationPin: newMentor.verificationPin
     });
 
     delete createdMentor.password;
@@ -46,5 +47,25 @@ export class MentorService {
     }
 
     return user;
+  }
+
+  async getMentorById(id: string): Promise<Mentor> {
+    const user = await this.mentorModel.findOne({ _id: id });
+
+    if (!user) {
+      throw new NotFoundException(`User not found`);
+    }
+
+    return user;
+  }
+
+  async updateMentor(id: string, updateOption: object): Promise<Mentor>{
+    try {
+        const user = await this.mentorModel.findByIdAndUpdate(id, updateOption)
+
+        return user
+    } catch{
+        throw new BadRequestException()
+    }
   }
 }

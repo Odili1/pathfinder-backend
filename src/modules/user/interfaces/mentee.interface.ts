@@ -1,11 +1,10 @@
 export interface Mentee{
-    firstName: string,
-    lastName: string,
+    fullname: string,
     age: number,
     dob: Date,
     email: string,
     password: string,
     status: boolean,
-    verification_pin?: string,
-    pin_update_time?: string
+    verificationPin?: string,
+    pinUpdateTime?: string
 }

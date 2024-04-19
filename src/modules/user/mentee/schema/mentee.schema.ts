@@ -2,10 +2,7 @@ import * as mongoose from 'mongoose'
 
 
 export const menteeSchema = new mongoose.Schema({
-    firstName: {
-        type: String
-    },
-    lastName: {
+    fullname: {
         type: String
     },
     age: {
@@ -20,10 +17,10 @@ export const menteeSchema = new mongoose.Schema({
     password: {
         type: String
     },
-    verification_pin: {
+    verificationPin: {
         type: String
     },
-    pin_update_time: {
+    pinUpdateTime: {
         type: Date
     },
     status: {
