@@ -6,10 +6,16 @@ import { UserModule } from './modules/user/user.module';
 import { MentorController } from './modules/user/mentor/controllers/mentor.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { envConfig } from './config';
+import { AuthController } from './modules/user/auth/auth.controller';
 
 @Module({
   imports: [MongooseModule.forRoot(envConfig.DB_URI), UserModule],
-  controllers: [AppController, MenteeController, MentorController],
+  controllers: [
+    AppController,
+    MenteeController,
+    MentorController,
+    AuthController,
+  ],
   providers: [AppService],
 })
 export class AppModule {}

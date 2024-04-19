@@ -1,4 +1,8 @@
 import { Controller } from "@nestjs/common";
 
 @Controller('mentor')
-export class MentorController{}
+export class MentorController{
+    constructor(){}
+
+    
+}

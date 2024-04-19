@@ -2,23 +2,24 @@ import * as mongoose from 'mongoose'
 
 
 export const mentorSchema = new mongoose.Schema({
-    firstName: {
-        type: String
-    },
-    lastName: {
-        type: String
+    fullname: {
+        type: String,
+        required: true
     },
     age: {
-        type: Number
+        type: Number,
     },
     dob: {
-        type: Date
+        type: Date,
+        // required: true
     },
     email: {
-        type: String
+        type: String,
+        required: true
     },
     password: {
-        type: String
+        type: String,
+        required: true
     },
     verification_pin: {
         type: String

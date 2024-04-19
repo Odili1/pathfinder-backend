@@ -11,5 +11,8 @@ function getString(envKey: string): string{
 }
 
 export const envConfig = {
-    DB_URI: getString('DB_URI')
+    DB_URI: getString('DB_URI'),
+    JWT_SECRET: getString('JWT_SECRET'),
+    MAILPASS: getString('MAILPASS'),
+    MAILADDRESS: getString('MAILADDRESS')
 }
