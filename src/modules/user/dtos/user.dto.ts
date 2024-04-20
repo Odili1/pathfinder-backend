@@ -1,5 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator"
-
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator"
 
 
 export class CreateLoginUserDto{
@@ -30,6 +29,66 @@ export class CreateSignupDto{
     @IsOptional()
     readonly verificationPin?: string
 }
+
+export class mentorBioDataDto{
+    @IsString()
+    readonly name: string
+
+    @IsEnum(['male', 'female', 'others'])
+    @IsString()
+    readonly gender: string
+
+    @IsOptional()
+    @IsString()
+    readonly organization: string
+
+    @IsOptional()
+    @IsString()
+    readonly yearsOfExperience: string
+
+    @IsOptional()
+    @IsString()
+    readonly levelOfExpertise: string
+
+    @IsOptional()
+    @IsString()
+    readonly availabilty: string
+
+    @IsOptional()
+    @IsString()
+    readonly industry: string
+
+    @IsOptional()
+    @IsString()
+    readonly location: string
+}
+
+
+export class menteeBioDataDto{
+    @IsString()
+    readonly name: string
+
+    @IsEnum(['male', 'female', 'others'])
+    @IsString()
+    readonly gender: string
+
+    @IsOptional()
+    @IsString()
+    readonly location: string
+    
+    @IsOptional()
+    @IsString()
+    readonly parentsEmail: string
+
+    @IsOptional()
+    @IsString()
+    readonly skills: string
+
+    @IsOptional()
+    @IsString()
+    readonly interests?: object
+}
+
 
 export class verificationPinDto{
     @IsNotEmpty()
