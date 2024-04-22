@@ -2,7 +2,10 @@ import * as mongoose from 'mongoose'
 
 
 export const menteeSchema = new mongoose.Schema({
-    fullname: {
+    avatar: {
+        type: String
+    },
+    name: {
         type: String
     },
     age: {
@@ -15,6 +18,24 @@ export const menteeSchema = new mongoose.Schema({
         type: String
     },
     password: {
+        type: String
+    },
+    location: {
+        type: String
+    },
+    parentsEmail: {
+        type: String
+    },
+    institution: {
+        type: String
+    },
+    skills: {
+        types: Array
+    },
+    interests: {
+        type: Array
+    },
+    bio: {
         type: String
     },
     verificationPin: {

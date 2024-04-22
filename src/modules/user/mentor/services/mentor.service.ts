@@ -8,6 +8,7 @@ import { Mentor } from '../../interfaces/mentor.interface';
 import { Model } from 'mongoose';
 import { CreateSignupDto } from '../../dtos/user.dto';
 import { PasswordService } from '../../auth/passwordEncryption.service';
+import { updateOption } from '../../types/updateOption.type';
 
 @Injectable()
 export class MentorService {
@@ -29,7 +30,7 @@ export class MentorService {
     );
 
     const createdMentor = await this.mentorModel.create({
-      fullname: newMentor.fullname,
+      name: newMentor.name,
       email: newMentor.email,
       password: password_hash,
       verificationPin: newMentor.verificationPin
@@ -56,16 +57,27 @@ export class MentorService {
       throw new NotFoundException(`User not found`);
     }
 
+    delete user.password
     return user;
   }
 
-  async updateMentor(id: string, updateOption: object): Promise<Mentor>{
+  async updateMentor(id: string, updateOption: object | updateOption): Promise<Mentor>{
     try {
-        const user = await this.mentorModel.findByIdAndUpdate(id, updateOption)
+      if (updateOption['changePassword']){
+        // Hash the new password
+        console.log(`Change password: ${updateOption['changePassword']}`);
+        updateOption['password'] = await this.passwordService.hashPassword(updateOption['changePassword'])
+      }
+      const user = await this.mentorModel.findByIdAndUpdate(id, updateOption)
 
-        return user
-    } catch{
-        throw new BadRequestException()
+      delete user['password']
+      
+      return user
+      
+    } catch (error){
+      console.log(error);
+      
+        throw new BadRequestException(`${error}`)
     }
   }
 }

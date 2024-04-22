@@ -23,7 +23,7 @@ export class AuthController {
 
   @Post('mentor/signup')
   async signUpMentor(@Body() createSignupDto: CreateSignupDto): Promise<any> {
-    const { fullname, email, password, confirmPassword } = createSignupDto;
+    const { name, email, password, confirmPassword } = createSignupDto;
 
     if (password != confirmPassword) {
       throw new BadRequestException(
@@ -39,11 +39,11 @@ export class AuthController {
 
     // Create User in DB
     console.log('Mentor creation');
-    const newMentor = await this.mentorService.createMentor({ fullname, email, password, verificationPin });
+    const newMentor = await this.mentorService.createMentor({ name, email, password, verificationPin });
 
     // Sending Pin to Email
     console.log('sending mail');
-    await this.authService.sendVerificationMail(fullname, email, verificationPin)
+    await this.authService.sendVerificationMail(name, email, verificationPin)
     
     return newMentor
 
@@ -52,8 +52,8 @@ export class AuthController {
   }
 
   @Post('mentor/:id/verify')
-  async verifyAccoutCreation(@Body() pin: verificationPinDto, @Param('id') id: string): Promise<any>{
-      return await this.authService.verifyMentor(pin, id)
+  async verifyAccoutCreation(@Param('id') id: string, @Body() pin: verificationPinDto): Promise<any>{
+      return await this.authService.verifyMentor(id, pin)
   }
 
   @Post('mentor/login')
@@ -77,7 +77,7 @@ export class AuthController {
 
   @Post('mentee/signup')
   async signUpMentee(@Body() createSignupDto: CreateSignupDto): Promise<any> {
-    const { fullname, email, password, confirmPassword } = createSignupDto;
+    const { name, email, password, confirmPassword } = createSignupDto;
 
     if (password != confirmPassword) {
       throw new BadRequestException(
@@ -91,10 +91,10 @@ export class AuthController {
       verificationPin = verificationPin + `${Math.floor(Math.random() * 10)}`
     }
 
-    const newmentee = await this.menteeService.createMentee({ fullname, email, password, verificationPin });
+    const newmentee = await this.menteeService.createMentee({ name, email, password, verificationPin });
 
     // Sending Pin to Email
-    await this.authService.sendVerificationMail(fullname, email, verificationPin)
+    await this.authService.sendVerificationMail(name, email, verificationPin)
 
     return newmentee
     // return this.authService.generateAccessToken({email, password})

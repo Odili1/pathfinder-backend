@@ -2,7 +2,10 @@ import * as mongoose from 'mongoose'
 
 
 export const mentorSchema = new mongoose.Schema({
-    fullname: {
+    avatar: {
+        type: String
+    },
+    name: {
         type: String,
         required: true
     },
@@ -20,6 +23,40 @@ export const mentorSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    gender: {
+        type: String,
+        enum: ['male', 'female', 'others']
+    },
+    organization: {
+        type: String
+    },
+    yearsOfExperience: {
+        type: String
+    },
+    levelOFExperience: {
+        type: String
+    },
+    availabilty: {
+        type: String
+    },
+    industry: {
+        type: String
+    },
+    location: {
+        type: String
+    },
+    resources:{
+        type: Array
+    },
+    skills: {
+        type: Array
+    },
+    interests: {
+        type: Array
+    },
+    bio: {
+        type: String
     },
     verificationPin: {
         type: String

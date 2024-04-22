@@ -44,7 +44,7 @@ export class AuthService {
     return mentor;
   }
 
-  async verifyMentor(pin: verificationPinDto, id: string) {
+  async verifyMentor(id: string, pin: verificationPinDto): Promise<any> {
     const user = await this.mentorService.getMentorById(id)
 
     if (!user){
@@ -59,10 +59,10 @@ export class AuthService {
 
     //  Send Account Verified Mail
     const option: IMailOption = {
-      mailto: user.email,
+      mailto: user.email, 
       subject: 'Verify Account',
       html: `
-          <p>Hey ${user.fullname},</p>
+          <p>Hey ${user.name.split(' ')[0]},</p>
           <br>
           <p>Your account has been activated.</p>
           <br>
@@ -124,7 +124,7 @@ export class AuthService {
       mailto: user.email,
       subject: 'Verify Account',
       html: `
-          <p>Hey ${user.fullname},</p>
+          <p>Hey ${user.name},</p>
           <br>
           <p>Your account has been activated.</p>
           <br>

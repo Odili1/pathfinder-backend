@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { envConfig } from 'src/config';
 import { MailService } from './auth/mailing.service';
 
+
 @Module({
   imports: [
     MenteeModule,
@@ -23,3 +24,8 @@ import { MailService } from './auth/mailing.service';
   exports: [MenteeModule, MentorModule, AuthService],
 })
 export class UserModule {}
+
+// {
+//   provide: APP_GUARD,
+//   useClass: AuthGuard
+// }

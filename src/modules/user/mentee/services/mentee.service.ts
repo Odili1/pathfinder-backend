@@ -8,6 +8,7 @@ import { CreateSignupDto } from '../../dtos/user.dto';
 import { PasswordService } from '../../auth/passwordEncryption.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { updateOption } from '../../types/updateOption.type';
 
 @Injectable()
 export class MenteeService {
@@ -29,7 +30,7 @@ export class MenteeService {
     );
 
     const createdMentee = await this.menteeModel.create({
-      fullname: newMentee.fullname,
+      name: newMentee.name,
       email: newMentee.email,
       password: password_hash,
       verificationPin: newMentee.verificationPin,
@@ -59,13 +60,23 @@ export class MenteeService {
     return user;
   }
 
-  async updateMentee(id: string, updateOption: object): Promise<Mentee> {
+  async updateMentee(id: string, updateOption: object | updateOption): Promise<Mentee>{
     try {
-      const user = await this.menteeModel.findByIdAndUpdate(id, updateOption);
+      if (updateOption['changePassword']){
+        // Hash the new password
+        console.log(`Change password: ${updateOption['changePassword']}`);
+        updateOption['password'] = await this.passwordService.hashPassword(updateOption['changePassword'])
+      }
+      const user = await this.menteeModel.findByIdAndUpdate(id, updateOption)
 
-      return user;
-    } catch {
-      throw new BadRequestException();
+      delete user['password']
+      
+      return user
+      
+    } catch (error){
+      console.log(error);
+      
+        throw new BadRequestException(`${error}`)
     }
   }
 }

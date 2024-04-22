@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator"
+import { IsArray, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator"
 
 
 export class CreateLoginUserDto{
@@ -15,7 +15,7 @@ export class CreateLoginUserDto{
 
 export class CreateSignupDto{
     @IsNotEmpty()
-    readonly fullname: string;
+    readonly name: string;
 
     @IsNotEmpty()
     readonly email: string;
@@ -30,12 +30,28 @@ export class CreateSignupDto{
     readonly verificationPin?: string
 }
 
-export class mentorBioDataDto{
+
+export class MentorBioDataDto{
     @IsString()
+    @IsOptional()
+    readonly avatar: string
+
+    @IsString()
+    @IsOptional()
     readonly name: string
+
+    @IsString()
+    @IsEmail()
+    @IsOptional()
+    readonly email: string
+
+    @IsString()
+    @IsOptional()
+    readonly changePassword: string
 
     @IsEnum(['male', 'female', 'others'])
     @IsString()
+    @IsOptional()
     readonly gender: string
 
     @IsOptional()
@@ -61,15 +77,45 @@ export class mentorBioDataDto{
     @IsOptional()
     @IsString()
     readonly location: string
+
+    @IsOptional()
+    @IsArray()
+    readonly interests: string[]
+
+    @IsOptional()
+    @IsArray()
+    readonly skills: string[]
+
+    @IsOptional()
+    @IsArray()
+    readonly resources: string[]
+
+    @IsOptional()
+    @IsString()
+    readonly bio: string
 }
 
 
-export class menteeBioDataDto{
+export class MenteeBioDataDto{
     @IsString()
+    @IsOptional()
+    readonly avatar: string
+
+    @IsString()
+    @IsOptional()
     readonly name: string
+
+    @IsString()
+    @IsEmail()
+    readonly email: string
+
+    @IsString()
+    @IsOptional()
+    readonly changePassword: string
 
     @IsEnum(['male', 'female', 'others'])
     @IsString()
+    @IsOptional()
     readonly gender: string
 
     @IsOptional()
@@ -81,12 +127,19 @@ export class menteeBioDataDto{
     readonly parentsEmail: string
 
     @IsOptional()
-    @IsString()
-    readonly skills: string
+    readonly institution: string
 
     @IsOptional()
     @IsString()
-    readonly interests?: object
+    readonly skills: string[]
+
+    @IsOptional()
+    @IsString()
+    readonly interests: string[]
+
+    @IsOptional()
+    @IsString()
+    readonly bio: string
 }
 
 

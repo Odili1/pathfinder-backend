@@ -1,5 +1,6 @@
 export interface Mentee{
-    fullname: string,
+    avatar?: string
+    name: string,
     age: number,
     dob: Date,
     email: string,
@@ -9,7 +10,7 @@ export interface Mentee{
     institution?: string,
     location?: string,
     parentsEmail?: string,
-    skills?: string,
+    skills?: string[],
     interests?: string[],
     verificationPin?: string,
     pinUpdateTime?: string
