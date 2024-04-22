@@ -23,13 +23,7 @@ export class AuthController {
 
   @Post('mentor/signup')
   async signUpMentor(@Body() createSignupDto: CreateSignupDto): Promise<any> {
-    const { name, email, password, confirmPassword } = createSignupDto;
-
-    if (password != confirmPassword) {
-      throw new BadRequestException(
-        'password and confrim password should be the same',
-      );
-    }
+    const { name, email, password } = createSignupDto;
 
     // Generating 4Digit Random Pin
     let verificationPin: string = ''
@@ -77,13 +71,7 @@ export class AuthController {
 
   @Post('mentee/signup')
   async signUpMentee(@Body() createSignupDto: CreateSignupDto): Promise<any> {
-    const { name, email, password, confirmPassword } = createSignupDto;
-
-    if (password != confirmPassword) {
-      throw new BadRequestException(
-        'password and confrim password should be the same',
-      );
-    }
+    const { name, email, password } = createSignupDto;
 
     // Generating 4Digit Random Pin
     let verificationPin: string = ''

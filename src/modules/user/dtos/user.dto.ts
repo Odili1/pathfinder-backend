@@ -23,9 +23,6 @@ export class CreateSignupDto{
     @IsNotEmpty()
     readonly password: string;
 
-    @IsNotEmpty()
-    readonly confirmPassword?: string
-
     @IsOptional()
     readonly verificationPin?: string
 }
