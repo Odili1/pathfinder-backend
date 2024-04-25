@@ -41,7 +41,7 @@ export class MenteeService {
   }
 
   async getMenteeByEmail(email: string): Promise<Mentee> {
-    const user = await this.menteeModel.findOne({ email: email });
+    const user = await this.menteeModel.findOne({ email: email }, {verificationPin: 0});
 
     if (!user) {
       throw new NotFoundException(`User with email: ${email} not found`);
@@ -51,13 +51,23 @@ export class MenteeService {
   }
 
   async getMenteeById(id: string): Promise<Mentee> {
-    const user = await this.menteeModel.findOne({ _id: id });
+    const user = await this.menteeModel.findOne({ _id: id }, {password: 0});
 
     if (!user) {
       throw new NotFoundException(`User not found`);
     }
 
     return user;
+  }
+
+  async getAllMentee(): Promise<Mentee[]>{
+    const mentees = await this.menteeModel.find({}, {password: 0, verificationPin: 0})
+
+    if (mentees.length == 0){
+      throw new NotFoundException('No Mentors found')
+    }
+
+    return mentees
   }
 
   async updateMentee(id: string, updateOption: object | updateOption): Promise<Mentee>{
@@ -79,4 +89,6 @@ export class MenteeService {
         throw new BadRequestException(`${error}`)
     }
   }
+
+
 }

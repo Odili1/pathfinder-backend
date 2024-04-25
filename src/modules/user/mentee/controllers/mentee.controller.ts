@@ -17,7 +17,21 @@ export class MenteeController {
   }
 
   @Post(':id/update')
-  async updateMentor(@Param('id') id: string, @Body() mentorBioDataDto: MenteeBioDataDto): Promise<Mentee>{
+  async updateMentee(@Param('id') id: string, @Body() mentorBioDataDto: MenteeBioDataDto): Promise<Mentee>{
     return this.menteeService.updateMentee(id, mentorBioDataDto)
-} 
+  }
+  
+  // Route to get a single mentor
+  @Get(':id')
+  async getMenteeById(@Param('id') id: string): Promise<Mentee>{
+    return this.menteeService.getMenteeById(id)
+  }
+
+  // Route to get all mentors
+  @Get()
+  async getAllMentee(): Promise<Mentee[]>{
+    return this.menteeService.getAllMentee()
+  }
+
+
 }

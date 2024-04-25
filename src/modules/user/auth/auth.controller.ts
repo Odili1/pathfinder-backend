@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Param,
@@ -11,8 +10,10 @@ import { AuthService } from './auth.service';
 import { MentorService } from '../mentor/services/mentor.service';
 import { MenteeService } from '../mentee/services/mentee.service';
 import { CreateLoginUserDto, CreateSignupDto, verificationPinDto } from '../dtos/user.dto';
+import { Public } from 'src/common/decorators/public.decorator';
 
 console.log('authcontroller');
+@Public(true)
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -39,6 +40,8 @@ export class AuthController {
     console.log('sending mail');
     await this.authService.sendVerificationMail(name, email, verificationPin)
     
+    // Removing the verification Pin and Password from Response
+
     return newMentor
 
     // Generate token to track user during Pin Verification

@@ -36,29 +36,42 @@ export class MentorService {
       verificationPin: newMentor.verificationPin
     });
 
-    delete createdMentor.password;
-    return createdMentor;
+    delete createdMentor['verificationPin']
+    // const {verificationPin, password, ...rest} = createdMentor
+    console.log(`createMentor: ${createdMentor}`);
+    return createdMentor
   }
 
   async getMentorByEmail(email: string): Promise<Mentor> {
-    const user = await this.mentorModel.findOne({ email: email });
+    const user = await this.mentorModel.findOne({ email: email }, {verificationPin: 0});
 
     if (!user) {
       throw new NotFoundException(`User with email: ${email} not found`);
     }
 
+    console.log(`getMentorByEmail: ${user}`);
     return user;
   }
 
   async getMentorById(id: string): Promise<Mentor> {
-    const user = await this.mentorModel.findOne({ _id: id });
+    const user = await this.mentorModel.findOne({ _id: id }, {password: 0});
 
     if (!user) {
       throw new NotFoundException(`User not found`);
     }
-
-    delete user.password
+    console.log(`getMentorById: ${user}`);
+    
     return user;
+  }
+
+  async getAllMentors(): Promise<Mentor[]>{
+    const mentors = await this.mentorModel.find({}, {password: 0, verificationPin: 0})
+
+    if (mentors.length == 0){
+      throw new NotFoundException('No Mentors found')
+    }
+
+    return mentors
   }
 
   async updateMentor(id: string, updateOption: object | updateOption): Promise<Mentor>{
@@ -69,15 +82,15 @@ export class MentorService {
         updateOption['password'] = await this.passwordService.hashPassword(updateOption['changePassword'])
       }
       const user = await this.mentorModel.findByIdAndUpdate(id, updateOption)
-
-      delete user['password']
       
+      // const {verificationPin, password, ...rest} = user
+      console.log(`updateMentor: ${user}`);
       return user
       
     } catch (error){
       console.log(error);
       
-        throw new BadRequestException(`${error}`)
+      throw new BadRequestException(`${error}`)
     }
   }
 }

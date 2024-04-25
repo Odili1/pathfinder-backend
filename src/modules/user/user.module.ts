@@ -7,6 +7,8 @@ import { AuthController } from './auth/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { envConfig } from 'src/config';
 import { MailService } from './auth/mailing.service';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 
 
 @Module({
@@ -19,7 +21,10 @@ import { MailService } from './auth/mailing.service';
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  providers: [AuthService, PasswordService, MailService],
+  providers: [AuthService, PasswordService, MailService, {
+    provide: APP_GUARD,
+    useClass: AuthGuard
+  }],
   controllers: [AuthController],
   exports: [MenteeModule, MentorModule, AuthService],
 })
