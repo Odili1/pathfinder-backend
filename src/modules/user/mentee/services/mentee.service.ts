@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Mentee } from '../../interfaces/mentee.interface';
+import { IMentee } from '../../interfaces/mentee.interface';
 import { CreateSignupDto } from '../../dtos/user.dto';
 import { PasswordService } from '../../auth/passwordEncryption.service';
 import { InjectModel } from '@nestjs/mongoose';
@@ -14,7 +14,7 @@ import { updateOption } from '../../types/updateOption.type';
 export class MenteeService {
   constructor(
     @InjectModel('Mentee')
-    private menteeModel: Model<Mentee>,
+    private menteeModel: Model<IMentee>,
     private passwordService: PasswordService,
   ) {}
 
@@ -40,17 +40,17 @@ export class MenteeService {
     return createdMentee;
   }
 
-  async getMenteeByEmail(email: string): Promise<Mentee> {
+  async getMenteeByEmail(email: string): Promise<IMentee> {
     const user = await this.menteeModel.findOne({ email: email }, {verificationPin: 0});
 
     if (!user) {
-      throw new NotFoundException(`User with email: ${email} not found`);
+      throw new NotFoundException(`User with email: ${email} not found. You might have registered as a mentor`);
     }
 
     return user;
   }
 
-  async getMenteeById(id: string): Promise<Mentee> {
+  async getMenteeById(id: string): Promise<IMentee> {
     const user = await this.menteeModel.findOne({ _id: id }, {password: 0});
 
     if (!user) {
@@ -60,17 +60,17 @@ export class MenteeService {
     return user;
   }
 
-  async getAllMentee(): Promise<Mentee[]>{
+  async getAllMentee(): Promise<IMentee[]>{
     const mentees = await this.menteeModel.find({}, {password: 0, verificationPin: 0})
 
     if (mentees.length == 0){
-      throw new NotFoundException('No Mentors found')
+      throw new NotFoundException('No mentees found')
     }
 
     return mentees
   }
 
-  async updateMentee(id: string, updateOption: object | updateOption): Promise<Mentee>{
+  async updateMentee(id: string, updateOption: object | updateOption): Promise<IMentee>{
     try {
       if (updateOption['changePassword']){
         // Hash the new password

@@ -1,4 +1,4 @@
-export interface Mentor{
+export interface IMentor{
     avatar?: string
     name: string,
     age?: number,

@@ -1,8 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { MenteeService } from '../services/mentee.service';
-import { Mentee } from '../../interfaces/mentee.interface';
+import { IMentee } from '../../interfaces/mentee.interface';
 import { AuthGuard } from 'src/common/guards/auth.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
 import { MenteeBioDataDto } from '../../dtos/user.dto';
 
 @UseGuards(AuthGuard)
@@ -10,26 +9,25 @@ import { MenteeBioDataDto } from '../../dtos/user.dto';
 export class MenteeController {
   constructor(private menteeService: MenteeService) {}
 
-  @Roles(['user'])
   @Get(':id')
-  async getOneMentee(@Param('id') id: string): Promise<Mentee> {
+  async getOneMentee(@Param('id') id: string): Promise<IMentee> {
     return this.menteeService.getMenteeById(id);
   }
 
   @Post(':id/update')
-  async updateMentee(@Param('id') id: string, @Body() mentorBioDataDto: MenteeBioDataDto): Promise<Mentee>{
+  async updateMentee(@Param('id') id: string, @Body() mentorBioDataDto: MenteeBioDataDto): Promise<IMentee>{
     return this.menteeService.updateMentee(id, mentorBioDataDto)
   }
   
   // Route to get a single mentor
   @Get(':id')
-  async getMenteeById(@Param('id') id: string): Promise<Mentee>{
+  async getMenteeById(@Param('id') id: string): Promise<IMentee>{
     return this.menteeService.getMenteeById(id)
   }
 
   // Route to get all mentors
   @Get()
-  async getAllMentee(): Promise<Mentee[]>{
+  async getAllMentees(): Promise<IMentee[]>{
     return this.menteeService.getAllMentee()
   }
 

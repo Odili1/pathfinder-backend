@@ -9,11 +9,14 @@ import { envConfig } from './config';
 import { AuthController } from './modules/user/auth/auth.controller';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailService } from './modules/user/auth/mailing.service';
+import { ResourceModule } from './modules/resource/resource.module';
+import { ResourceController } from './modules/resource/resource.controller';
 
 @Module({
   imports: [
     MongooseModule.forRoot(envConfig.DB_URI), 
     UserModule,
+    ResourceModule,
     MailerModule.forRoot({
       transport: {
         service: 'Gmail',
@@ -25,13 +28,14 @@ import { MailService } from './modules/user/auth/mailing.service';
           pass: envConfig.MAILPASS
         }
       }
-    })
+    }),
   ],
   controllers: [
     AppController,
     MenteeController,
     MentorController,
     AuthController,
+    ResourceController
   ],
   providers: [AppService, MailService],
 })

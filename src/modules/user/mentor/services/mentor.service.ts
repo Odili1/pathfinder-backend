@@ -1,10 +1,11 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Mentor } from '../../interfaces/mentor.interface';
+import { IMentor } from '../../interfaces/mentor.interface';
 import { Model } from 'mongoose';
 import { CreateSignupDto } from '../../dtos/user.dto';
 import { PasswordService } from '../../auth/passwordEncryption.service';
@@ -14,7 +15,7 @@ import { updateOption } from '../../types/updateOption.type';
 export class MentorService {
   constructor(
     @InjectModel('Mentor')
-    private mentorModel: Model<Mentor>,
+    private mentorModel: Model<IMentor>,
     private passwordService: PasswordService,
   ) {}
 
@@ -42,18 +43,18 @@ export class MentorService {
     return createdMentor
   }
 
-  async getMentorByEmail(email: string): Promise<Mentor> {
+  async getMentorByEmail(email: string): Promise<IMentor> {
     const user = await this.mentorModel.findOne({ email: email }, {verificationPin: 0});
 
     if (!user) {
-      throw new NotFoundException(`User with email: ${email} not found`);
+      throw new NotFoundException(`User with email: ${email} not found. Not a registered mentor`);
     }
 
     console.log(`getMentorByEmail: ${user}`);
     return user;
   }
 
-  async getMentorById(id: string): Promise<Mentor> {
+  async getMentorById(id: string): Promise<IMentor> {
     const user = await this.mentorModel.findOne({ _id: id }, {password: 0});
 
     if (!user) {
@@ -64,7 +65,7 @@ export class MentorService {
     return user;
   }
 
-  async getAllMentors(): Promise<Mentor[]>{
+  async getAllMentors(): Promise<IMentor[]>{
     const mentors = await this.mentorModel.find({}, {password: 0, verificationPin: 0})
 
     if (mentors.length == 0){
@@ -74,7 +75,7 @@ export class MentorService {
     return mentors
   }
 
-  async updateMentor(id: string, updateOption: object | updateOption): Promise<Mentor>{
+  async updateMentor(id: string, updateOption: object | updateOption): Promise<IMentor>{
     try {
       if (updateOption['changePassword']){
         // Hash the new password
@@ -82,13 +83,17 @@ export class MentorService {
         updateOption['password'] = await this.passwordService.hashPassword(updateOption['changePassword'])
       }
       const user = await this.mentorModel.findByIdAndUpdate(id, updateOption)
+
+      if (!user){
+        throw new ForbiddenException('You cannot update another user')
+      }
       
       // const {verificationPin, password, ...rest} = user
       console.log(`updateMentor: ${user}`);
       return user
       
     } catch (error){
-      console.log(error);
+      console.log(`UpdateError: ${error}`);
       
       throw new BadRequestException(`${error}`)
     }

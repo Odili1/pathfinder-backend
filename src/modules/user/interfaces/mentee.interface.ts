@@ -1,4 +1,4 @@
-export interface Mentee{
+export interface IMentee{
     avatar?: string
     name: string,
     age: number,
