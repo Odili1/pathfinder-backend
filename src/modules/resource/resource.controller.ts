@@ -34,9 +34,17 @@ export class ResourceController{
         return await this.resourceService.getAllResources()
     }
     
+    // Get Resources created by a particular mentor
+    @Get('my-resources')
+    async getResourcesByMentor(@Req() req: Request): Promise<IResource[]>{
+        const mentorId = req['user'].sub
+        return this.resourceService.getResourceByMentor(mentorId)
+    }
+
     @Public(true)
     @Get(':id')
     async getResource(@Param('id') id: string): Promise<IResource>{
         return await this.resourceService.getResourceById(id)
     }
+
 }

@@ -2,9 +2,9 @@ import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { IMentor } from "../../interfaces/mentor.interface";
 import { MentorBioDataDto } from "../../dtos/user.dto";
 import { MentorService } from "../services/mentor.service";
-// import { AuthGuard } from "src/common/guards/auth.guard";
 import { Roles } from "src/common/decorators/roles.decorator";
 import { RolesGuard } from "src/common/guards/role.guard";
+import { Public } from "src/common/decorators/public.decorator";
 
 
 // @UseGuards(AuthGuard)
@@ -30,6 +30,7 @@ export class MentorController{
     }
 
     // Route to get all mentors
+    @Public(true)
     @Get()
     async getAllMentors(): Promise<IMentor[]>{
         return this.mentorService.getAllMentors()

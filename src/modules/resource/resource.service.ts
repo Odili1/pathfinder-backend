@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { IResource } from "./interfaces/resource.interface";
 import { CreateResourceDto, UpdateResourceDto } from "./dtos/resource.dto";
-import mongoose, { Model } from "mongoose";
+import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 
 
@@ -15,10 +15,9 @@ export class ResourceService{
     async createResource(mentorId: string, createResourceDto: CreateResourceDto): Promise<IResource>{
         console.log(`MentorID${mentorId}`);
         
-        const toObjectId = new mongoose.Types.ObjectId(mentorId)
         const newResource = {
             ...createResourceDto,
-            mentorId: toObjectId
+            mentorId: mentorId
         }
         if (!createResourceDto.title){
             throw new BadRequestException('Title is required')
@@ -61,5 +60,15 @@ export class ResourceService{
         }
 
         return resource
+    }
+
+    async getResourceByMentor(mentorId: string): Promise<IResource[]>{
+        const resources = await this.resourceModel.find({mentorId: mentorId})
+
+        if (resources.length == 0){
+            throw new NotFoundException('Resource Not Found')
+        }
+
+        return resources
     }
 }
