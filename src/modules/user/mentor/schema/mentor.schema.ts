@@ -47,7 +47,8 @@ export const mentorSchema = new mongoose.Schema({
         type: String
     },
     resources:{
-        type: Array
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Resource'
     },
     skills: {
         type: Array

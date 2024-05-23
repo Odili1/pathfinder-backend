@@ -57,7 +57,9 @@ export class MentorService {
   }
 
   async getMentorById(id: string): Promise<IMentor> {
-    const user = await this.mentorModel.findOne({ _id: id }, {password: 0});
+    const user = await this.mentorModel.findOne({ _id: id }, {password: 0}).populate({
+      path: 'resources'
+    })
 
     if (!user) {
       throw new NotFoundException(`User not found`);
@@ -86,18 +88,19 @@ export class MentorService {
         updateOption['password'] = await this.passwordService.hashPassword(updateOption['changePassword'])
       }
 
+      
       // Upload Multiple FIles
       // console.log(`updateMentorFile: ${JSON.stringify(files)}`);
       if (file){
       //   for (const filename in files){
-      //     if (filename === 'avatar'){
+        //     if (filename === 'avatar'){
       //       for (const file of files[filename]){
       //       }
       //     }
       //     if (filename === 'image'){
-      //       for (const file of files[filename]){
-      //           console.log(`File Received: ${file.originalname}`);
-      //           const avatar = await this.cloudinaryService.upload_file(file).then((data) => {
+        //       for (const file of files[filename]){
+          //           console.log(`File Received: ${file.originalname}`);
+          //           const avatar = await this.cloudinaryService.upload_file(file).then((data) => {
       //             console.log(`avatarData: ${data}`);
                   
       //             return data.secure_url
@@ -120,13 +123,13 @@ export class MentorService {
       //     }
       //   }
       
-        console.log(`File Received: ${file.originalname}`);
-        const avatar = await this.cloudinaryService.upload_file(file).then((data) => {
+      console.log(`File Received: ${file.originalname}`);
+      const avatar = await this.cloudinaryService.upload_file(file).then((data) => {
           console.log(`avatarData: ${JSON.stringify(data)}`);
           
           return data.secure_url
         }).catch((error)=> {throw new BadRequestException(error)})
-
+        
         updateOption['avatar'] = avatar
       }
       
@@ -137,6 +140,13 @@ export class MentorService {
       if (!user){
         throw new ForbiddenException('You cannot update another user')
       }
+      
+      // Check for new Resource Update
+      if (updateOption['resources']){
+        user.resources = [...user.resources, updateOption['resources']]
+        user.save()
+      }
+
       
       // const {verificationPin, password, ...rest} = user
       console.log(`updateMentor: ${user}`);

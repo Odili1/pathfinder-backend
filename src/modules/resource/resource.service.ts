@@ -3,13 +3,15 @@ import { IResource } from "./interfaces/resource.interface";
 import { CreateResourceDto, UpdateResourceDto } from "./dtos/resource.dto";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
+import { MentorService } from "../user/mentor/services/mentor.service";
 
 
 @Injectable()
 export class ResourceService{
     constructor(
         @InjectModel('Resource')
-        private resourceModel: Model<IResource>
+        private resourceModel: Model<IResource>,
+        private mentorService: MentorService,
     ){}
 
     async createResource(mentorId: string, createResourceDto: CreateResourceDto): Promise<IResource>{
@@ -25,6 +27,10 @@ export class ResourceService{
 
         const resource = await this.resourceModel.create(newResource)
 
+        const mentor = await this.mentorService.updateMentor(mentorId, {resources: resource._id})
+
+        console.log(`UpdateMentorResources: ${mentor}`);
+        
         return resource
     }
 
@@ -35,7 +41,10 @@ export class ResourceService{
     }
 
     async getAllResources(): Promise<IResource[]>{
-        const resources = await this.resourceModel.find({}).populate('mentorId')
+        const resources = await this.resourceModel.find({}).populate({
+            path: 'mentorId',
+            select: '_id name email'
+        })
 
         if (resources.length == 0){
             throw new NotFoundException('No Resource Found')

@@ -19,6 +19,9 @@ export const resourceSchema = new mongoose.Schema({
     courseDuration: {
         type: String
     },
+    files: {
+        type: Array
+    },
     price: {
         type: String
     },

@@ -73,6 +73,9 @@ export class UpdateResourceDto{
     readonly price: string;
 
     @IsOptional()
+    readonly files: string[]
+
+    @IsOptional()
     @IsString()
     readonly levelOfExpertise: string;
 
