@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { MenteeService } from '../services/mentee.service';
 import { IMentee } from '../../interfaces/mentee.interface';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { MenteeBioDataDto } from '../../dtos/user.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard)
 @Controller('mentee')
@@ -15,8 +16,9 @@ export class MenteeController {
   }
 
   @Post(':id/update')
-  async updateMentee(@Param('id') id: string, @Body() mentorBioDataDto: MenteeBioDataDto): Promise<IMentee>{
-    return this.menteeService.updateMentee(id, mentorBioDataDto)
+  @UseInterceptors(FileInterceptor('avatar'))
+  async updateMentee(@UploadedFile() file: Express.Multer.File, @Param('id') id: string, @Body() mentorBioDataDto: MenteeBioDataDto): Promise<IMentee>{
+    return this.menteeService.updateMentee(id, mentorBioDataDto, file)
   }
   
   // Route to get a single mentor

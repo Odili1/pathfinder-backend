@@ -86,18 +86,52 @@ export class MentorService {
         updateOption['password'] = await this.passwordService.hashPassword(updateOption['changePassword'])
       }
 
-      // Upload profile picture
-      console.log(`updateMentorFile: ${JSON.stringify(file)}`);
+      // Upload Multiple FIles
+      // console.log(`updateMentorFile: ${JSON.stringify(files)}`);
       if (file){
+      //   for (const filename in files){
+      //     if (filename === 'avatar'){
+      //       for (const file of files[filename]){
+      //       }
+      //     }
+      //     if (filename === 'image'){
+      //       for (const file of files[filename]){
+      //           console.log(`File Received: ${file.originalname}`);
+      //           const avatar = await this.cloudinaryService.upload_file(file).then((data) => {
+      //             console.log(`avatarData: ${data}`);
+                  
+      //             return data.secure_url
+      //           }).catch((error)=> {throw new BadRequestException(error)})
+        
+      //           updateOption['avatar'] = avatar
+      //       }
+      //     }
+      //     if (filename === 'resource'){
+      //       for (const file of files[filename]){
+      //           console.log(`File Received: ${file.originalname}`);
+      //           const resource = await this.cloudinaryService.upload_file(file).then((data) => {
+      //             console.log(`resourceData: ${JSON.stringify(data)}`);
+                  
+      //             return data.secure_url
+      //           }).catch((error)=> {throw new BadRequestException(error)})
+        
+      //           updateOption['resources'].push(resource)
+      //       }
+      //     }
+      //   }
+      
+        console.log(`File Received: ${file.originalname}`);
         const avatar = await this.cloudinaryService.upload_file(file).then((data) => {
-          console.log(`avatarData: ${data}`);
+          console.log(`avatarData: ${JSON.stringify(data)}`);
           
           return data.secure_url
         }).catch((error)=> {throw new BadRequestException(error)})
 
         updateOption['avatar'] = avatar
       }
-
+      
+      console.log(`UpdateOption: ${JSON.stringify(updateOption)}`);
+      
       const user = await this.mentorModel.findByIdAndUpdate(id, updateOption)
 
       if (!user){

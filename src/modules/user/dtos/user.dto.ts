@@ -104,6 +104,7 @@ export class MenteeBioDataDto{
 
     @IsString()
     @IsEmail()
+    @IsOptional()
     readonly email: string
 
     @IsString()

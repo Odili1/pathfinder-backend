@@ -9,6 +9,7 @@ import { PasswordService } from '../../auth/passwordEncryption.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { updateOption } from '../../types/updateOption.type';
+import { CloudinaryService } from 'src/integrations/cloudinary/cloudinary.service';
 
 @Injectable()
 export class MenteeService {
@@ -16,6 +17,7 @@ export class MenteeService {
     @InjectModel('Mentee')
     private menteeModel: Model<IMentee>,
     private passwordService: PasswordService,
+    private cloudinaryService: CloudinaryService
   ) {}
 
   async createMentee(newMentee: CreateSignupDto) {
@@ -70,13 +72,27 @@ export class MenteeService {
     return mentees
   }
 
-  async updateMentee(id: string, updateOption: object | updateOption): Promise<IMentee>{
+  async updateMentee(id: string, updateOption: object | updateOption, file?: Express.Multer.File): Promise<IMentee>{
     try {
       if (updateOption['changePassword']){
         // Hash the new password
         console.log(`Change password: ${updateOption['changePassword']}`);
         updateOption['password'] = await this.passwordService.hashPassword(updateOption['changePassword'])
       }
+
+      // Upload Multiple FIles
+      // console.log(`updateMentorFile: ${JSON.stringify(files)}`);
+      if (file){
+        console.log(`File Received: ${file.originalname}`);
+        const avatar = await this.cloudinaryService.upload_file(file).then((data) => {
+          console.log(`avatarData: ${JSON.stringify(data)}`);
+          
+          return data.secure_url
+        }).catch((error)=> {throw new BadRequestException(error)})
+
+        updateOption['avatar'] = avatar
+      }
+
       const user = await this.menteeModel.findByIdAndUpdate(id, updateOption)
 
       delete user['password']

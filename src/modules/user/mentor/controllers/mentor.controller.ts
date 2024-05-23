@@ -21,9 +21,16 @@ export class MentorController{
 
     // Route for update
     @Post(':id/update')
-    @UseInterceptors(FileInterceptor('image'))
+    @UseInterceptors(FileInterceptor('avatar'))
     async updateMentor(@UploadedFile() file: Express.Multer.File, @Param('id') id: string, @Body() mentorBioDataDto: MentorBioDataDto): Promise<IMentor>{
         try {
+            // for (const filename in files){
+            //     for (const file of files[filename]){
+            //         console.log(`File Received: ${file.originalname}`);
+            //     }
+            // }
+            // console.log(files.resource[0].originalname);
+            console.log(`File Received: ${file}`);
             return this.mentorService.updateMentor(id, mentorBioDataDto, file)
         } catch (error) {
             throw new BadRequestException(error)
