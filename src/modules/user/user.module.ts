@@ -9,6 +9,7 @@ import { envConfig } from 'src/config';
 import { MailService } from './auth/mailing.service';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from 'src/common/guards/auth.guard';
+import { CloudinaryService } from 'src/integrations/cloudinary/cloudinary.service';
 
 
 @Module({
@@ -21,7 +22,7 @@ import { AuthGuard } from 'src/common/guards/auth.guard';
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  providers: [AuthService, PasswordService, MailService, {
+  providers: [AuthService, PasswordService, MailService, CloudinaryService, {
     provide: APP_GUARD,
     useClass: AuthGuard
   }],

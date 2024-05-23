@@ -10,6 +10,7 @@ import { Model } from 'mongoose';
 import { CreateSignupDto } from '../../dtos/user.dto';
 import { PasswordService } from '../../auth/passwordEncryption.service';
 import { updateOption } from '../../types/updateOption.type';
+import { CloudinaryService } from 'src/integrations/cloudinary/cloudinary.service';
 
 @Injectable()
 export class MentorService {
@@ -17,6 +18,7 @@ export class MentorService {
     @InjectModel('Mentor')
     private mentorModel: Model<IMentor>,
     private passwordService: PasswordService,
+    private cloudinaryService: CloudinaryService
   ) {}
 
   async createMentor(newMentor: CreateSignupDto): Promise<any> {
@@ -75,13 +77,27 @@ export class MentorService {
     return mentors
   }
 
-  async updateMentor(id: string, updateOption: object | updateOption): Promise<IMentor>{
+  async updateMentor(id: string, updateOption: updateOption, file?: Express.Multer.File): Promise<IMentor>{
     try {
+      // Check for new password
       if (updateOption['changePassword']){
         // Hash the new password
         console.log(`Change password: ${updateOption['changePassword']}`);
         updateOption['password'] = await this.passwordService.hashPassword(updateOption['changePassword'])
       }
+
+      // Upload profile picture
+      console.log(`updateMentorFile: ${JSON.stringify(file)}`);
+      if (file){
+        const avatar = await this.cloudinaryService.upload_file(file).then((data) => {
+          console.log(`avatarData: ${data}`);
+          
+          return data.secure_url
+        }).catch((error)=> {throw new BadRequestException(error)})
+
+        updateOption['avatar'] = avatar
+      }
+
       const user = await this.mentorModel.findByIdAndUpdate(id, updateOption)
 
       if (!user){

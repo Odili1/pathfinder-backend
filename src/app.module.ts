@@ -12,6 +12,8 @@ import { MailService } from './modules/user/auth/mailing.service';
 import { ResourceModule } from './modules/resource/resource.module';
 import { ResourceController } from './modules/resource/resource.controller';
 
+console.log(`configurin multer`);
+
 @Module({
   imports: [
     MongooseModule.forRoot(envConfig.DB_URI), 

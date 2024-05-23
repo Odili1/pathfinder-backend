@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { mentorSchema } from './schema/mentor.schema';
 import { PasswordService } from '../auth/passwordEncryption.service';
 import { MentorService } from './services/mentor.service';
+import { CloudinaryService } from 'src/integrations/cloudinary/cloudinary.service';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { MentorService } from './services/mentor.service';
     ]),
   ],
   controllers: [MentorController],
-  providers: [PasswordService, MentorService],
+  providers: [PasswordService, MentorService, CloudinaryService],
   exports: [MentorService],
 })
 export class MentorModule {}

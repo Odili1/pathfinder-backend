@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Post, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { IMentor } from "../../interfaces/mentor.interface";
 import { MentorBioDataDto } from "../../dtos/user.dto";
 import { MentorService } from "../services/mentor.service";
 import { Roles } from "src/common/decorators/roles.decorator";
 import { RolesGuard } from "src/common/guards/role.guard";
 import { Public } from "src/common/decorators/public.decorator";
+import { FileInterceptor } from "@nestjs/platform-express";
+// import { CloudinaryService } from "src/integrations/cloudinary/cloudinary.service";
 
 
 // @UseGuards(AuthGuard)
@@ -13,14 +15,19 @@ import { Public } from "src/common/decorators/public.decorator";
 @Controller('mentor')
 export class MentorController{
     constructor(
-        private mentorService: MentorService
+        private mentorService: MentorService,
+        // private cloudinaryService: CloudinaryService
     ){}
 
     // Route for update
     @Post(':id/update')
-    // @Public(true)
-    async updateMentor(@Param('id') id: string, @Body() mentorBioDataDto: MentorBioDataDto): Promise<IMentor>{
-        return this.mentorService.updateMentor(id, mentorBioDataDto)
+    @UseInterceptors(FileInterceptor('image'))
+    async updateMentor(@UploadedFile() file: Express.Multer.File, @Param('id') id: string, @Body() mentorBioDataDto: MentorBioDataDto): Promise<IMentor>{
+        try {
+            return this.mentorService.updateMentor(id, mentorBioDataDto, file)
+        } catch (error) {
+            throw new BadRequestException(error)
+        }
     }
 
     // Route to get a single mentor

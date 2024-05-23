@@ -14,5 +14,8 @@ export const envConfig = {
     DB_URI: getString('DB_URI'),
     JWT_SECRET: getString('JWT_SECRET'),
     MAILPASS: getString('MAILPASS'),
-    MAILADDRESS: getString('MAILADDRESS')
+    MAILADDRESS: getString('MAILADDRESS'),
+    CLOUDINARY_CLOUD_NAME: getString('CLOUDINARY_CLOUD_NAME'),
+    CLOUDINARY_API_KEY: getString('CLOUDINARY_API_KEY'),
+    CLOUDINARY_API_SECRET: getString('CLOUDINARY_API_SECRET')
 }
