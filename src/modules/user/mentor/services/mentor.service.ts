@@ -123,11 +123,11 @@ export class MentorService {
       //     }
       //   }
       
-      console.log(`File Received: ${file.originalname}`);
-      const avatar = await this.cloudinaryService.upload_file(file).then((data) => {
-          console.log(`avatarData: ${JSON.stringify(data)}`);
-          
-          return data.secure_url
+        console.log(`File Received: ${file.originalname}`);
+        const avatar = await this.cloudinaryService.upload_file(file).then((data) => {
+            console.log(`avatarData: ${JSON.stringify(data)}`);
+            
+            return data.secure_url
         }).catch((error)=> {throw new BadRequestException(error)})
         
         updateOption['avatar'] = avatar

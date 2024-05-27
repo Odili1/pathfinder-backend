@@ -31,6 +31,9 @@ export class CreateResourceDto{
     readonly price: string;
 
     @IsOptional()
+    readonly files: string[]
+
+    @IsOptional()
     @IsString()
     readonly levelOfExpertise: string;
 

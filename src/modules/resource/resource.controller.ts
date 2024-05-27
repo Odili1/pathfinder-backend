@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Req, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ResourceService } from "./resource.service";
 import { CreateResourceDto, UpdateResourceDto } from "./dtos/resource.dto";
 import { IResource } from "./interfaces/resource.interface";
@@ -6,6 +6,7 @@ import { Request } from "express";
 import { RolesGuard } from "src/common/guards/role.guard";
 import { Roles } from "src/common/decorators/roles.decorator";
 import { Public } from "src/common/decorators/public.decorator";
+import { FilesInterceptor } from "@nestjs/platform-express";
 
 @UseGuards(RolesGuard)
 @Roles('mentor')
@@ -17,14 +18,22 @@ export class ResourceController{
 
 
     @Post('create-resource')
-    async createResource(@Body() createResourceDto: CreateResourceDto, @Req() req: Request): Promise<IResource>{
+    @UseInterceptors(FilesInterceptor('file'))
+    async createResource(@UploadedFiles() files: Express.Multer.File[], @Body() createResourceDto: CreateResourceDto, @Req() req: Request): Promise<IResource>{
+        // console.log(`createResources: ${files}`);
+        // for (const file of files){
+        //     console.log(file.originalname);
+        // }
         const mentorId = req['user'].sub
-        return this.resourceService.createResource(mentorId, createResourceDto)
+        return this.resourceService.createResource(mentorId, createResourceDto, files)
     }
-
+    
     @Post(':id/update')
-    async updateResource(@Body() updateResource: UpdateResourceDto, @Param('id') id: string){
-        return this.resourceService.updateResource(id, updateResource)
+    @UseInterceptors(FilesInterceptor('file'))
+    async updateResource(@UploadedFiles() files: Express.Multer.File[], @Body() updateResource: UpdateResourceDto, @Param('id') id: string){
+        console.log(`createResource: ${files}`);
+        
+        return this.resourceService.updateResource(id, updateResource, files)
     }
     
 

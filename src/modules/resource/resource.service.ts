@@ -4,6 +4,7 @@ import { CreateResourceDto, UpdateResourceDto } from "./dtos/resource.dto";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { MentorService } from "../user/mentor/services/mentor.service";
+import { CloudinaryService } from "src/integrations/cloudinary/cloudinary.service";
 
 
 @Injectable()
@@ -12,20 +13,33 @@ export class ResourceService{
         @InjectModel('Resource')
         private resourceModel: Model<IResource>,
         private mentorService: MentorService,
+        private cloudinaryService: CloudinaryService
     ){}
 
-    async createResource(mentorId: string, createResourceDto: CreateResourceDto): Promise<IResource>{
+    async createResource(mentorId: string, createResourceDto: CreateResourceDto, files: Express.Multer.File[]): Promise<IResource>{
         console.log(`MentorID${mentorId}`);
         
         const newResource = {
             ...createResourceDto,
-            mentorId: mentorId
+            mentorId: mentorId,
+            files: []
         }
+
         if (!createResourceDto.title){
             throw new BadRequestException('Title is required')
         }
 
+        if (files){
+            for (const file of files){
+                const fileString = await this.cloudinaryService.upload_file(file).then((data) => data.secure_url).catch((error) => {
+                    throw new BadRequestException(error)
+                })
+                newResource.files = [...newResource.files, fileString]
+            }
+        }
+
         const resource = await this.resourceModel.create(newResource)
+
 
         const mentor = await this.mentorService.updateMentor(mentorId, {resources: resource._id})
 
@@ -34,9 +48,22 @@ export class ResourceService{
         return resource
     }
 
-    async updateResource(id: string, updateResourceDto: UpdateResourceDto): Promise<IResource>{
+    async updateResource(id: string, updateResourceDto: UpdateResourceDto, files: Express.Multer.File[]): Promise<IResource>{
         const updatedResource = await this.resourceModel.findByIdAndUpdate(id, updateResourceDto)
+        
+        if (files){
+            for (const file of files){
+                const fileString = await this.cloudinaryService.upload_file(file).then((data) => {
+                    console.log(`avatarData: ${JSON.stringify(data)}`);
+                    
+                    return data.secure_url
+                }).catch((error)=> {throw new BadRequestException(error)})
+                
+                updatedResource["files"] = [...updatedResource["files"], fileString]
+            }
+        }
 
+        updatedResource.save()
         return updatedResource
     }
 
